@@ -21,7 +21,7 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def home():
-    return "HELLO WORLD"
+    return render_template("home.html")
 
 
 @app.route("/get_posts")

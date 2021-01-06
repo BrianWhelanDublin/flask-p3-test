@@ -1,18 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Posts</title>
-</head>
-<body>
-    {% for post in posts %}
-       <p>{{ post.category_name }}</p>
-       <hr>
-       <p>{{ post.title}}</p>
-       <hr>
-       <p>{{ post.body }}</p>
-       <p>{{ post.author}}</p>
-    {% endfor %}
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block title %}
+Posts
+{% endblock %}
+
+{% block main %}
+
+{% for post in posts %}
+<div class="container">
+
+    <div class="col s12 m7">
+
+        <div class="card horizontal">
+            <div class="card-stacked">
+                <div class="card-content">
+                  <h2 class="header">{{ post.title }}</h2>
+                    <p>{{ post.body }}</p>
+                </div>
+                <div class="card-action">
+                    <p>Author : {{ post.author}}</p>
+                    <p>Category: {{ post.category_name }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}

@@ -22,6 +22,12 @@ def home():
     return "HELLO WORLD"
 
 
+@app.route("/get_posts")
+def get_posts():
+    posts = mongo.db.posts.find()
+    return render_template("posts.html", posts=posts)
+
+
 if __name__ == "__main__":
     app.run(host=os.environ.get("IP"),
             port=os.environ.get("PORT"),

@@ -4,6 +4,7 @@ from flask import (Flask, flash, render_template,
                    url_for)
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
+from forms import RegistrationForm, LoginForm
 if os.path.exists("env.py"):
     import env
 
@@ -21,13 +22,28 @@ mongo = PyMongo(app)
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html", title="Home")
 
 
 @app.route("/get_posts")
 def get_posts():
     posts = mongo.db.posts.find()
-    return render_template("posts.html", posts=posts)
+    return render_template("posts.html",
+                           title="Posts", posts=posts)
+
+
+@app.route("/register")
+def register():
+    form = RegistrationForm()
+    return render_template("register.html",
+                           title="Register", form=form)
+
+
+@app.route("/login")
+def login():
+    form = LoginForm()
+    return render_template("login.html",
+                           title="Login", form=form)
 
 
 if __name__ == "__main__":

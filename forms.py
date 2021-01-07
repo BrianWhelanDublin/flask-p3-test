@@ -1,6 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms.validators import (DataRequired,
+                                Length, Email,
+                                EqualTo,
+                                ValidationError)
 
 
 class RegistrationForm(FlaskForm):
@@ -14,6 +17,16 @@ class RegistrationForm(FlaskForm):
                                      validators=[DataRequired(),
                                                  EqualTo("password")])
     submit = SubmitField("Sign Up")
+
+    def validate_username(self, username):
+        user = mongo.db.users.find_one(username.data)
+        if user:
+            raise ValidationError("Username already exists")
+
+    def validate_email(self, email):
+        user = mongo.db.users.find_one(email.data)
+        if user:
+            raise ValidationError("Email already exists")
 
 
 class LoginForm(FlaskForm):

@@ -1,6 +1,103 @@
 {% extends "base.html" %}
 
 {% block main %}
+<div class="container">
+    <div class="row">
+        <form method="POST" action="" class="input-field col s6">
+            {{ form.hidden_tag() }}
 
+            <h2>Sign Up</h2>
+            <hr>
+            <div class="input-field col s12">
+                {{ form.username.label() }}
+
+                {% if form.username.errors %}
+                {{ form.username(class="validate") }}
+                <div class="error">{% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+
+                </div>
+                {% else %}
+                {{ form.username(class="validate") }}
+                {% endif %}
+
+
+
+                <!-- <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+          <label for="first_name">First Name</label> -->
+            </div>
+            <div class="input-field col s12">
+                {{ form.email.label() }}
+
+                {% if form.email.errors %}
+                {{ form.email(class="validate") }}
+                <div class="error">{% for error in form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+
+                </div>
+                {% else %}
+                {{ form.email(class="validate") }}
+                {% endif %}
+
+                <!--   <div class="row">
+          <input id="email" type="email" class="validate">
+          <label for="email">Email</label>
+         -->
+            </div>
+            <div class="input-field col s12">
+               {{ form.password.label() }}
+
+                {% if form.password.errors %}
+                {{ form.password(class="validate") }}
+                <div class="error">{% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+
+                </div>
+                {% else %}
+                {{ form.password(class="validate") }}
+                {% endif %}
+
+                <!--   <div class="row">
+          <input id="email" type="email" class="validate">
+          <label for="email">Email</label>
+         -->
+            </div>
+            <div class="input-field col s12">
+                {{ form.confirm_password.label() }}
+
+                {% if form.confirm_password.errors %}
+                {{ form.confirm_password(class="validate") }}
+                <div class="error">{% for error in form.confirm_password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+
+                </div>
+                {% else %}
+                {{ form.confirm_password(class="validate") }}
+                {% endif %}
+
+                <!--   <div class="row">
+          <input id="email" type="email" class="validate">
+          <label for="email">Email</label>
+         -->
+            </div>
+            <div class="col s12">
+                {{ form.submit(class="btn blue-grey text-shadow") }}
+                <!-- <button type="submit" class="btn blue-grey text-shadow">
+                    Register <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div> -->
+                <!-- <a class="waves-effect waves-light blue-grey btn">Sign Up</a> -->
+            </div>
+        </form>
+        <div class="col s12">
+            <small>Already have an account? <a href="{{ url_for('login') }}">Login</a></small>
+        </div>
+    </div>
+
+</div>
 
 {% endblock %}

@@ -5,30 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-    {{ title }}</title>
+        {{ title }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 
 <body>
-      <nav>
-    <div class="nav-wrapper blue-grey lighten-5">
-      <a href="#!" class="brand-logo black-text">Logo</a>
-      <a href="#" data-target="mobile-demo" class="sidenav-trigger black-text"><i class="material-icons">menu</i></a>
-      <ul class="right hide-on-med-and-down">
-       <li><a class="black-text" href="{{ url_for('home') }}">Home</a></li>
-        <li><a class="black-text" href="{{ url_for('get_posts') }}">Posts</a></li>
-      </ul>
-    </div>
-  </nav>
+    <nav>
+        <div class="nav-wrapper blue-grey lighten-5">
+            <a href="#!" class="brand-logo black-text">Logo</a>
+            <a href="#" data-target="mobile-demo" class="sidenav-trigger black-text"><i
+                    class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a class="black-text" href="{{ url_for('home') }}">Home</a></li>
+                <li><a class="black-text" href="{{ url_for('login') }}">Login</a></li>
+                <li><a class="black-text" href="{{ url_for('register') }}">register</a></li>
+            </ul>
+        </div>
+    </nav>
 
-  <ul class="sidenav" id="mobile-demo">
-    <li><a class="black-text" href="{{ url_for('home') }}">Home</a></li>
-        <li><a class="black-text" href="{{ url_for('get_posts') }}">Posts</a></li>
-  </ul>
+    <ul class="sidenav" id="mobile-demo">
+        <li><a class="black-text" href="{{ url_for('home') }}">Home</a></li>
+        <li><a class="black-text" href="{{ url_for('login') }}">Login</a></li>
+        <li><a class="black-text" href="{{ url_for('register') }}">Register</a></li>
+    </ul>
     <main>
-        {% block main %}
-        {% endblock %}
+
+
+        <div class="row">
+            <div class="col s12">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="row flashes">
+                    <h4 class="{{category}} center-align">
+                        {{ message }}
+                    </h4>
+                </div>
+                <!-- <div class="{{category}}">
+                    {{message}}
+                </div> -->
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                {% block main %}
+                {% endblock %}
+            </div>
+        </div>
+
     </main>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}"></script>

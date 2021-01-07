@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container">
+    <div class="row">
+        <form method="POST" action="" class="input-field col s6">
+            {{ form.hidden_tag() }}
+
+            <h2>Login</h2>
+            <hr>
+            <div class="input-field col s12">
+                {{ form.username.label() }}
+
+                {% if form.username.errors %}
+                {{ form.username(class="validate") }}
+                <div class="error">{% for error in form.username.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+
+                </div>
+                {% else %}
+                {{ form.username(class="validate") }}
+                {% endif %}
+
+
+
+                <!-- <input placeholder="Placeholder" id="first_name" type="text" class="validate">
+          <label for="first_name">First Name</label> -->
+           
+            </div>
+            <div class="input-field col s12">
+               {{ form.password.label() }}
+
+                {% if form.password.errors %}
+                {{ form.password(class="validate") }}
+                <div class="error">{% for error in form.password.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+
+                </div>
+                {% else %}
+                {{ form.password(class="validate") }}
+                {% endif %}
+              <div class="row">
+            <!-- <div class="input-field col s12">
+                <div class="switch">
+                    <i class="fas fa-exclamation-circle prefix light-blue-text text-darken-4"></i>
+                    <label>
+                        <input type="checkbox" id="is_urgent" name="is_urgent">
+                        <span class="lever"></span>
+                        Is Urgent
+                    </label>
+                </div>
+            </div>
+        </div> -->
+         <div class="row">
+            <div class="input-field col s12">
+                <div class="switch">
+                    <i class="fas fa-exclamation-circle prefix light-blue-text text-darken-4"></i>
+                      <label>
+                         {{ form.remember(type="checkbox")}}
+                        <span class="lever"></span>
+                         {{ form.remember.label()}}
+                    </label>
+                      
+                
+                       
+                       
+                </div>
+            </div>
+        </div>
+            </div>
+            <div class="col s12">
+                {{ form.submit(class="btn blue-grey text-shadow") }}
+                <!-- <button type="submit" class="btn blue-grey text-shadow">
+                    Register <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </div> -->
+                <!-- <a class="waves-effect waves-light blue-grey btn">Sign Up</a> -->
+            </div>
+        </form>
+        <div class="col s12">
+            <small>Not registered? <a href="{{ url_for('register') }}">Sign up</a></small>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

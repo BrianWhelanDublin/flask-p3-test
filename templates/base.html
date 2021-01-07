@@ -18,16 +18,24 @@
                     class="material-icons">menu</i></a>
             <ul class="right hide-on-med-and-down">
                 <li><a class="black-text" href="{{ url_for('home') }}">Home</a></li>
+                {% if current_user.is_authenticated %}
+                <li><a class="black-text" href="{{ url_for('logout') }}">Logout</a></li>
+                {% else %}
                 <li><a class="black-text" href="{{ url_for('login') }}">Login</a></li>
                 <li><a class="black-text" href="{{ url_for('register') }}">register</a></li>
+                {% endif %}
             </ul>
         </div>
     </nav>
 
     <ul class="sidenav" id="mobile-demo">
         <li><a class="black-text" href="{{ url_for('home') }}">Home</a></li>
+        {% if current_user.is_authenticated %}
+        <li><a class="black-text" href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
         <li><a class="black-text" href="{{ url_for('login') }}">Login</a></li>
-        <li><a class="black-text" href="{{ url_for('register') }}">Register</a></li>
+        <li><a class="black-text" href="{{ url_for('register') }}">register</a></li>
+        {% endif %}
     </ul>
     <main>
 

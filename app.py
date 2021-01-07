@@ -11,6 +11,8 @@ from wtforms.validators import (DataRequired,
                                 EqualTo,
                                 ValidationError)
 from flask_bcrypt import Bcrypt
+from flask_login import (LoginManager, current_user, login_user,
+                         logout_user, login_required)
 if os.path.exists("env.py"):
     import env
 
@@ -25,6 +27,7 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
 
 
 class RegistrationForm(FlaskForm):
@@ -63,6 +66,36 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 
+class User:
+    def __init__(self, username):
+        self.username = username
+
+    @staticmethod
+    def is_authenticated():
+        return True
+
+    @staticmethod
+    def is_active():
+        return True
+
+    @staticmethod
+    def is_anonymous():
+        return False
+
+    def get_id(self):
+        return self.username
+
+    @login_manager.user_loader
+    def load_user(username):
+        u = mongo.db.users.find_one({"username": username})
+        if not u:
+            return None
+        return User(username=u['username'])
+
+
+
+
+
 @app.route("/")
 def home():
     return render_template("home.html", title="Home")
@@ -77,6 +110,8 @@ def get_posts():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
 
     form = RegistrationForm()
 
@@ -104,15 +139,31 @@ def register():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("home"))
     form = LoginForm()
     if form.validate_on_submit():
-        if form.username.data == "admin" and form.password.data == "12345":
-            flash("You have been logged in!", "success")
+        user = mongo.db.users.find_one(
+            {"username": form.username.data})
+
+        if user and bcrypt.check_password_hash(user["password"],
+                                               form.password.data):
+            user_obj = User(username=user["username"])
+            login_user(user_obj, remember=form.remember.data)
+            flash("User Logged In Sucessfully", "success")
             return redirect(url_for("home"))
+
         else:
             flash("Login Unsuccessful please check user details", "error")
     return render_template("login.html",
                            title="Login", form=form)
+
+
+@app.route("/logout", methods=["GET", "POST"])
+def logout():
+    logout_user()
+    flash("Logged out")
+    return redirect(url_for("login"))
 
 
 if __name__ == "__main__":

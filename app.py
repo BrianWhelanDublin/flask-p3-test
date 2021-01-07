@@ -28,6 +28,8 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
+login_manager.login_view= "login"
+login_manager.login_message_category= "error"
 
 
 class RegistrationForm(FlaskForm):
@@ -93,9 +95,6 @@ class User:
         return User(username=u['username'])
 
 
-
-
-
 @app.route("/")
 def home():
     return render_template("home.html", title="Home")
@@ -150,8 +149,12 @@ def login():
                                                form.password.data):
             user_obj = User(username=user["username"])
             login_user(user_obj, remember=form.remember.data)
+            next_page = request.args.get("next")
             flash("User Logged In Sucessfully", "success")
-            return redirect(url_for("home"))
+            if next_page:
+                return redirect(next_page)
+            else:
+                return redirect(url_for("home"))
 
         else:
             flash("Login Unsuccessful please check user details", "error")
@@ -164,6 +167,12 @@ def logout():
     logout_user()
     flash("Logged out")
     return redirect(url_for("login"))
+
+
+@app.route("/account")
+@login_required
+def account():
+    return render_template("account.html", title="account")
 
 
 if __name__ == "__main__":

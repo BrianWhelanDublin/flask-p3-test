@@ -4,15 +4,16 @@ from flask import (Flask, flash, render_template,
                    url_for)
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, BooleanField
-from wtforms.validators import (DataRequired,
-                                Length, Email,
-                                EqualTo,
-                                ValidationError)
+# from flask_wtf import FlaskForm
+# from wtforms import StringField, PasswordField, SubmitField, BooleanField
+# from wtforms.validators import (DataRequired,
+#                                 Length, Email,
+#                                 EqualTo,
+#                                 ValidationError)
 from flask_bcrypt import Bcrypt
 from flask_login import (LoginManager, current_user, login_user,
                          logout_user, login_required)
+from forms import RegistrationForm, LoginForm
 if os.path.exists("env.py"):
     import env
 
@@ -28,44 +29,44 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 mongo = PyMongo(app)
 bcrypt = Bcrypt(app)
 login_manager = LoginManager(app)
-login_manager.login_view= "login"
-login_manager.login_message_category= "error"
+login_manager.login_view = "login"
+login_manager.login_message_category = "error"
 
 
-class RegistrationForm(FlaskForm):
-    username = StringField("Username",
-                           validators=[DataRequired(), Length(min=2, max=20)])
-    email = StringField("Email",
-                        validators=[DataRequired(), Email()])
-    password = PasswordField("Password",
-                             validators=[DataRequired()])
-    confirm_password = PasswordField("Confirm Password",
-                                     validators=[DataRequired(),
-                                                 EqualTo("password")])
-    submit = SubmitField("Sign Up")
+# class RegistrationForm(FlaskForm):
+#     username = StringField("Username",
+#                            validators=[DataRequired(), Length(min=2, max=20)])
+#     email = StringField("Email",
+#                         validators=[DataRequired(), Email()])
+#     password = PasswordField("Password",
+#                              validators=[DataRequired()])
+#     confirm_password = PasswordField("Confirm Password",
+#                                      validators=[DataRequired(),
+#                                                  EqualTo("password")])
+#     submit = SubmitField("Sign Up")
 
-    def validate_username(self, username):
-        user = mongo.db.users.find_one(
-            {"username": username.data.lower()}
-        )
-        if user:
-            raise ValidationError("Username already exists")
+#     def validate_username(self, username):
+#         user = mongo.db.users.find_one(
+#             {"username": username.data.lower()}
+#         )
+#         if user:
+#             raise ValidationError("Username already exists")
 
-    def validate_email(self, email):
-        user = mongo.db.users.find_one(
-             {"email": email.data}
-        )
-        if user:
-            raise ValidationError("Email already exists")
+#     def validate_email(self, email):
+#         user = mongo.db.users.find_one(
+#              {"email": email.data}
+#         )
+#         if user:
+#             raise ValidationError("Email already exists")
 
 
-class LoginForm(FlaskForm):
-    username = StringField("Username",
-                           validators=[DataRequired(), Length(min=2, max=20)])
-    password = PasswordField("Password",
-                             validators=[DataRequired()])
-    remember = BooleanField("Remember Me")
-    submit = SubmitField("Login")
+# class LoginForm(FlaskForm):
+#     username = StringField("Username",
+#                            validators=[DataRequired(), Length(min=2, max=20)])
+#     password = PasswordField("Password",
+#                              validators=[DataRequired()])
+#     remember = BooleanField("Remember Me")
+#     submit = SubmitField("Login")
 
 
 class User:
@@ -87,12 +88,13 @@ class User:
     def get_id(self):
         return self.username
 
-    @login_manager.user_loader
-    def load_user(username):
-        u = mongo.db.users.find_one({"username": username})
-        if not u:
-            return None
-        return User(username=u['username'])
+
+@login_manager.user_loader
+def load_user(username):
+    user = mongo.db.users.find_one({"username": username})
+    if not user:
+        return None
+    return User(user["username"])
 
 
 @app.route("/")

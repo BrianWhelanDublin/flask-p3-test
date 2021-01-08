@@ -1,4 +1,5 @@
 from flask_wtf import FlaskForm
+from flask_login import current_user
 from wtforms import StringField, PasswordField, SubmitField, BooleanField
 from wtforms.validators import (DataRequired,
                                 Length, Email,
@@ -43,28 +44,25 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Login")
 
 
-# class User:
-#     def __init__(self, username):
-#         self.username = username
+class UpdateAccountForm(FlaskForm):
+    username = StringField("Username",
+                           validators=[DataRequired(), Length(min=2, max=20)])
+    email = StringField("Email",
+                        validators=[DataRequired(), Email()])
+    submit = SubmitField("Update")
 
-#     @staticmethod
-#     def is_authenticated():
-#         return True
+    def validate_username(self, username):
+        if username.data != current_user.username:
+            user = mongo.db.users.find_one(
+                {"username": username.data.lower()}
+            )
+            if user:
+                raise ValidationError("Username already exists")
 
-#     @staticmethod
-#     def is_active():
-#         return True
-
-#     @staticmethod
-#     def is_anonymous():
-#         return False
-
-#     def get_id(self):
-#         return self.username
-
-#     @login_manager.user_loader
-#     def load_user(username):
-#         u = mongo.db.users.find_one({"username": username})
-#         if not u:
-#             return None
-#         return User(username=u['username'])
+    def validate_email(self, email):
+        if email.data != current_user.email:
+            user = mongo.db.users.find_one(
+                {"email": email.data}
+            )
+            if user:
+                raise ValidationError("Email already exists")

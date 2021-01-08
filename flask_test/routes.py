@@ -12,7 +12,9 @@ from flask import (flash, render_template,
 #                                 ValidationError)
 # from flask_bcrypt import Bcrypt
 from flask_test import app, bcrypt, mongo
-from flask_test.forms import RegistrationForm, LoginForm
+from flask_test.forms import (RegistrationForm,
+                              LoginForm,
+                              UpdateAccountForm)
 from flask_test.models import User
 from flask_login import (current_user, login_user,
                          logout_user, login_required)
@@ -37,7 +39,8 @@ if os.path.exists("env.py"):
 
 # class RegistrationForm(FlaskForm):
 #     username = StringField("Username",
-#                            validators=[DataRequired(), Length(min=2, max=20)])
+#                            validators=[DataRequired(),
+#                                        Length(min=2, max=20)])
 #     email = StringField("Email",
 #                         validators=[DataRequired(), Email()])
 #     password = PasswordField("Password",
@@ -64,7 +67,8 @@ if os.path.exists("env.py"):
 
 # class LoginForm(FlaskForm):
 #     username = StringField("Username",
-#                            validators=[DataRequired(), Length(min=2, max=20)])
+#                            validators=[DataRequired(),
+#                                        Length(min=2, max=20)])
 #     password = PasswordField("Password",
 #                              validators=[DataRequired()])
 #     remember = BooleanField("Remember Me")
@@ -148,10 +152,9 @@ def login():
     if form.validate_on_submit():
         user = mongo.db.users.find_one(
             {"username": form.username.data})
-
         if user and bcrypt.check_password_hash(user["password"],
                                                form.password.data):
-            user_obj = User(username=user["username"])
+            user_obj = User(user)
             login_user(user_obj, remember=form.remember.data)
             next_page = request.args.get("next")
             flash("User Logged In Sucessfully", "success")
@@ -173,10 +176,24 @@ def logout():
     return redirect(url_for("login"))
 
 
-@app.route("/account")
+@app.route("/account", methods=["GET", "POST"])
 @login_required
 def account():
-    return render_template("account.html", title="account")
+    form = UpdateAccountForm()
+    if form.validate_on_submit():
+        mongo.db.users.update({"username": current_user.username},
+                              {"$set": {
+                                  "username": form.username.data,
+                                  "email": form.email.data
+                              }})
+        flash("Your account has been updated", "success")
+        return redirect(url_for("account"))
+    elif request.method == "GET":
+        form.username.data = current_user.username
+        form.email.data = current_user.email
+    return render_template("account.html",
+                           title="account",
+                           form=form)
 
 
 # if __name__ == "__main__":

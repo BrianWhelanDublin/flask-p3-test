@@ -1,36 +1,38 @@
 import os
-from flask import (Flask, flash, render_template,
-                   redirect, request, session,
+from flask import (flash, render_template,
+                   redirect, request,
                    url_for)
-from flask_pymongo import PyMongo
-from bson.objectid import ObjectId
+# from flask_pymongo import PyMongo
+# from bson.objectid import ObjectId
 # from flask_wtf import FlaskForm
 # from wtforms import StringField, PasswordField, SubmitField, BooleanField
 # from wtforms.validators import (DataRequired,
 #                                 Length, Email,
 #                                 EqualTo,
 #                                 ValidationError)
-from flask_bcrypt import Bcrypt
-from flask_login import (LoginManager, current_user, login_user,
+# from flask_bcrypt import Bcrypt
+from flask_test import app, bcrypt, mongo
+from flask_test.forms import RegistrationForm, LoginForm
+from flask_test.models import User
+from flask_login import (current_user, login_user,
                          logout_user, login_required)
-from forms import RegistrationForm, LoginForm
 if os.path.exists("env.py"):
     import env
 
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 
-app.config["MONGO_DBNAME"] = os.environ.get("MONGO_DBNAME")
-app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
+# app.config["MONGO_DBNAME"] = os.environ.get("MONGO_DBNAME")
+# app.config["MONGO_URI"] = os.environ.get("MONGO_URI")
+# app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 
 
-mongo = PyMongo(app)
-bcrypt = Bcrypt(app)
-login_manager = LoginManager(app)
-login_manager.login_view = "login"
-login_manager.login_message_category = "error"
+# mongo = PyMongo(app)
+# bcrypt = Bcrypt(app)
+# login_manager = LoginManager(app)
+# login_manager.login_view = "login"
+# login_manager.login_message_category = "error"
 
 
 # class RegistrationForm(FlaskForm):
@@ -69,32 +71,32 @@ login_manager.login_message_category = "error"
 #     submit = SubmitField("Login")
 
 
-class User:
-    def __init__(self, username):
-        self.username = username
+# class User:
+#     def __init__(self, username):
+#         self.username = username
 
-    @staticmethod
-    def is_authenticated():
-        return True
+#     @staticmethod
+#     def is_authenticated():
+#         return True
 
-    @staticmethod
-    def is_active():
-        return True
+#     @staticmethod
+#     def is_active():
+#         return True
 
-    @staticmethod
-    def is_anonymous():
-        return False
+#     @staticmethod
+#     def is_anonymous():
+#         return False
 
-    def get_id(self):
-        return self.username
+#     def get_id(self):
+#         return self.username
 
 
-@login_manager.user_loader
-def load_user(username):
-    user = mongo.db.users.find_one({"username": username})
-    if not user:
-        return None
-    return User(user["username"])
+# @login_manager.user_loader
+# def load_user(username):
+#     user = mongo.db.users.find_one({"username": username})
+#     if not user:
+#         return None
+#     return User(user["username"])
 
 
 @app.route("/")
@@ -177,7 +179,7 @@ def account():
     return render_template("account.html", title="account")
 
 
-if __name__ == "__main__":
-    app.run(host=os.environ.get("IP"),
-            port=os.environ.get("PORT"),
-            debug=True)
+# if __name__ == "__main__":
+#     app.run(host=os.environ.get("IP"),
+#             port=os.environ.get("PORT"),
+#             debug=True)

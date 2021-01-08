@@ -4,6 +4,7 @@ from wtforms.validators import (DataRequired,
                                 Length, Email,
                                 EqualTo,
                                 ValidationError)
+from flask_test import mongo
 
 
 class RegistrationForm(FlaskForm):
